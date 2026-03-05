@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор паролей</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 0 20px;
+            background-color: #f8f9fa;
+        }
+        h1 {
+            color: #343a40;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="range"] {
+            width: 100%;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .checkbox-group label {
+            display: inline-flex;
+            align-items: center;
+            font-weight: normal;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            font-size: 1.2em;
+            word-break: break-all;
+        }
+        .password-display {
+            font-family: monospace;
+            font-size: 1.5em;
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .strength {
+            margin-top: 10px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .very-weak { background-color: #dc3545; }
+        .weak { background-color: #fd7e14; }
+        .medium { background-color: #ffc107; color: #212529; }
+        .strong { background-color: #28a745; }
+        .very-strong { background-color: #20c997; }
+        .copy-btn {
+            margin-left: 10px;
+            background-color: #6c757d;
+        }
+        .history {
+            margin-top: 30px;
+            border-top: 1px solid #dee2e6;
+            padding-top: 20px;
+        }
+        .history-item {
+            font-family: monospace;
+            background-color: #f8f9fa;
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Генератор паролей</h1>
+        <form method="post">
+            <div class="form-group">
+                <label for="length">Длина пароля: <span id="length-value">12</span></label>
+                <input type="range" name="length" id="length" min="4" max="32" value="12" oninput="document.getElementById('length-value').innerText = this.value">
+            </div>
+            <div class="form-group">
+                <label>Использовать символы:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="lowercase" checked> a-z</label>
+                    <label><input type="checkbox" name="uppercase" checked> A-Z</label>
+                    <label><input type="checkbox" name="digits" checked> 0-9</label>
+                    <label><input type="checkbox" name="special" checked> !@#$%</label>
+                </div>
+            </div>
+            <button type="submit">Сгенерировать</button>
+        </form>
+
+        {% if password %}
+        <div class="result">
+            <div class="password-display">
+                {{ password }}
+                <button class="copy-btn" onclick="navigator.clipboard.writeText('{{ password }}'); alert('Скопировано!')">Копировать</button>
+            </div>
+            {% if strength_text %}
+            <div class="strength {{ strength_class }}">{{ strength_text }}</div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if history %}
+        <div class="history">
+            <h3>📜 Последние пароли</h3>
+            {% for pwd in history %}
+            <div class="history-item">{{ pwd }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
